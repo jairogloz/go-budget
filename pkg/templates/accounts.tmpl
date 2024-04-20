@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Accounts</title>
+</head>
+<body>
+<h1>Accounts</h1>
+<ul>
+    {{range .accounts}}
+    <li>
+        <!--<a href="/accounts/{{.ID}}">{{.Name}}</a>: {{.CurrentBalance}}-->
+        <a href="/accounts/{{.ID}}">{{.Name}}</a>: {{.CurrentBalance}}
+    </li>
+    {{end}}
+</ul>
+</body>
+</html>
