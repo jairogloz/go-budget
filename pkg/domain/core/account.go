@@ -5,6 +5,7 @@ import (
 	"github.com/shopspring/decimal"
 )
 
+// Account reflects a monetary account in the system.
 type Account struct {
 	ID             string          `json:"id" bson:"_id"`
 	Name           string          `json:"name" bson:"name"`

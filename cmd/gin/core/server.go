@@ -5,5 +5,6 @@ import "github.com/gin-gonic/gin"
 // Server is the core server struct that holds the required components to serve
 // the application using gin.
 type Server struct {
-	Router *gin.Engine
+	Router         *gin.Engine
+	TransactionHdl TransactionHandler
 }

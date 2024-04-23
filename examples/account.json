@@ -1,0 +1,7 @@
+{
+  "id": "1",
+  "name": "Savings",
+  "balance": 1000.00,
+  "created_at": "2016-01-01T00:00:00Z",
+  "updated_at": "2016-01-01T00:00:00Z"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "1",
+  "account_id": "acc-1",
+  "description": "This is a test description",
+  "category": "food",
+  "amount": -50.5,
+  "created_at": "2019-01-01T00:00:00Z",
+  "updated_at": "2019-01-01T00:00:00Z"
+}
