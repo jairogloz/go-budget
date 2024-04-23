@@ -65,8 +65,8 @@ func main() {
 				CurrentBalance: decimal.NewFromInt32(100),
 			},
 			"transactions": []domainCore.Transaction{
-				{ID: "1", Amount: decimal.NewFromFloat(100.0), Description: "Initial deposit", Category: strPtr("deposit")},
-				{ID: "2", Amount: decimal.NewFromFloat(-10.0), Description: "Coquita", Category: strPtr("food")},
+				{ID: "1", Amount: 100.0, Description: "Initial deposit", Category: strPtr("deposit")},
+				{ID: "2", Amount: -10.0, Description: "Coquita", Category: strPtr("food")},
 			},
 		})
 	})

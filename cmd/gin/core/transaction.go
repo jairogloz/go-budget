@@ -3,7 +3,6 @@ package core
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jairogloz/go-budget/pkg/domain/core"
-	"github.com/shopspring/decimal"
 	"time"
 )
 
@@ -33,7 +32,7 @@ func (t TransactionCreate) ToDomain() *core.Transaction {
 	now := time.Now()
 
 	domainT := &core.Transaction{
-		Amount:      decimal.NewFromFloat(t.Amount),
+		Amount:      t.Amount,
 		AccountId:   t.AccountId,
 		Description: t.Description,
 		CreatedAt:   &now,
