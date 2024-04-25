@@ -2,6 +2,7 @@ package transaction
 
 import (
 	"github.com/jairogloz/go-budget/pkg/domain/core"
+	goBudgetMongo "github.com/jairogloz/go-budget/pkg/mongo"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -16,6 +17,6 @@ type repository struct {
 func NewRepository(client *mongo.Client) core.TransactionRepository {
 	return &repository{
 		client: client,
-		col:    client.Database("go-budget").Collection("transactions"),
+		col:    client.Database(goBudgetMongo.DatabaseNameGoBudget).Collection(goBudgetMongo.CollectionNameTransactions),
 	}
 }
