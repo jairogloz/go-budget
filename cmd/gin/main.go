@@ -17,6 +17,9 @@ import (
 	"os"
 )
 
+// todo: remove this and take from auth
+var userId = "1"
+
 func main() {
 
 	err := godotenv.Load()
@@ -45,6 +48,7 @@ func main() {
 
 	server := ginCore.Server{
 		AccountHdl:     accountHandler,
+		AccountSrv:     accountService,
 		Router:         router,
 		TransactionHdl: txHandler,
 	}
@@ -61,20 +65,30 @@ func main() {
 		})
 	})
 	server.Router.GET("/my-accounts", func(c *gin.Context) {
+		accounts, err := server.AccountSrv.List(userId)
+		if err != nil {
+			log.Printf("Error getting accounts: %v", err)
+			c.JSON(500, gin.H{"error": "Internal server error"})
+			return
+		}
 		c.HTML(200, "accounts.tmpl", gin.H{
-			"accounts": []domainCore.Account{
-				{Name: "Savings", ID: "savings", Balance: 100.0},
-				{Name: "Credit", ID: "credit", Balance: -100.0},
-			},
+			"accounts": accounts,
 		})
 	})
 
 	server.Router.GET("/my-accounts/:id", func(c *gin.Context) {
+
+		// get id from path
+		id := c.Param("id")
+
+		queriedAccount, err := server.AccountSrv.GetByID(userId, id)
+		if err != nil {
+			log.Printf("Error getting account: %v", err)
+			c.JSON(500, gin.H{"error": "Internal server error"})
+			return
+		}
 		c.HTML(200, "account.tmpl", gin.H{
-			"account": domainCore.Account{
-				Name:    "Savings",
-				Balance: 100,
-			},
+			"account": queriedAccount,
 			"transactions": []domainCore.Transaction{
 				{ID: "1", Amount: 100.0, Description: "Initial deposit", Category: strPtr("deposit")},
 				{ID: "2", Amount: -10.0, Description: "Coquita", Category: strPtr("food")},

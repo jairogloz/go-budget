@@ -8,8 +8,7 @@
 <ul>
     {{range .accounts}}
     <li>
-        <!--<a href="/accounts/{{.ID}}">{{.Name}}</a>: {{.Balance}}-->
-        <a href="/my-accounts/{{.ID}}">{{.Name}}</a>: {{.CurrentBalance}}
+        <a href="/my-accounts/{{.ID}}">{{.Name}}</a>: {{.Balance}}
     </li>
     {{end}}
 </ul>
