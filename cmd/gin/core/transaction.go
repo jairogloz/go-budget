@@ -15,6 +15,13 @@ type TransactionCreate struct {
 	Description string               `json:"description" bson:"description"`
 }
 
+// TransactionCreateResponse is the struct that represents the response to a
+// transaction creation request.
+type TransactionCreateResponse struct {
+	Transaction core.Transaction `json:"transaction"`
+	Account     core.Account     `json:"account"`
+}
+
 // TransactionCategory is the struct that represents the category of a
 // transaction.
 type TransactionCategory struct {

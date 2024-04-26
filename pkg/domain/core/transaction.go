@@ -20,11 +20,11 @@ type Transaction struct {
 // storage.
 type TransactionRepository interface {
 	//FindByAccountID(accountID string) ([]Transaction, error)
-	Insert(transaction *Transaction, newCategory bool) error
+	Insert(transaction *Transaction, newCategory bool) (*Account, error)
 }
 
 // TransactionService exposes the services provided by this application on the
 // transaction domain.
 type TransactionService interface {
-	Insert(transaction *Transaction, newCategory bool) error
+	Insert(transaction *Transaction, newCategory bool) (*Account, error)
 }

@@ -9,14 +9,16 @@ import (
 // repository implements the core.TransactionRepository interface using mongo
 // as the underlying database.
 type repository struct {
+	accCol *mongo.Collection
 	client *mongo.Client
-	col    *mongo.Collection
+	txCol  *mongo.Collection
 }
 
 // NewRepository creates a new transaction repository.
 func NewRepository(client *mongo.Client) core.TransactionRepository {
 	return &repository{
+		accCol: client.Database(goBudgetMongo.DatabaseNameGoBudget).Collection(goBudgetMongo.CollectionNameAccounts),
 		client: client,
-		col:    client.Database(goBudgetMongo.DatabaseNameGoBudget).Collection(goBudgetMongo.CollectionNameTransactions),
+		txCol:  client.Database(goBudgetMongo.DatabaseNameGoBudget).Collection(goBudgetMongo.CollectionNameTransactions),
 	}
 }

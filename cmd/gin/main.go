@@ -61,8 +61,8 @@ func main() {
 	server.Router.GET("/my-accounts", func(c *gin.Context) {
 		c.HTML(200, "accounts.tmpl", gin.H{
 			"accounts": []domainCore.Account{
-				{Name: "Savings", ID: "savings", CurrentBalance: 100.0},
-				{Name: "Credit", ID: "credit", CurrentBalance: -100.0},
+				{Name: "Savings", ID: "savings", Balance: 100.0},
+				{Name: "Credit", ID: "credit", Balance: -100.0},
 			},
 		})
 	})
@@ -70,8 +70,8 @@ func main() {
 	server.Router.GET("/my-accounts/:id", func(c *gin.Context) {
 		c.HTML(200, "account.tmpl", gin.H{
 			"account": domainCore.Account{
-				Name:           "Savings",
-				CurrentBalance: 100,
+				Name:    "Savings",
+				Balance: 100,
 			},
 			"transactions": []domainCore.Transaction{
 				{ID: "1", Amount: 100.0, Description: "Initial deposit", Category: strPtr("deposit")},

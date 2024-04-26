@@ -20,11 +20,16 @@ func (h Handler) Insert(c *gin.Context) {
 	}
 
 	domainTx := transactionCreate.ToDomain()
-	err := h.service.Insert(domainTx, isNewCategory)
+	updatedAccount, err := h.service.Insert(domainTx, isNewCategory)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, domainTx)
+	txCreateResponse := core.TransactionCreateResponse{
+		Transaction: *domainTx,
+		Account:     *updatedAccount,
+	}
+
+	c.JSON(http.StatusOK, txCreateResponse)
 }
