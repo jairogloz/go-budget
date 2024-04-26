@@ -10,10 +10,12 @@ type Account struct {
 
 // AccountRepository exposes the methods to interact with the account storage.
 type AccountRepository interface {
+	GetByID(userId, id string) (Account, error)
 	List(userId string) ([]Account, error)
 }
 
 // AccountService exposes the services provided by this application on the account domain.
 type AccountService interface {
+	GetByID(userId, id string) (Account, error)
 	List(userId string) ([]Account, error)
 }

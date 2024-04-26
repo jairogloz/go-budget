@@ -49,6 +49,7 @@ func main() {
 
 	// ============= BACKEND ROUTES =============
 	server.Router.GET("/accounts", server.AccountHdl.List)
+	server.Router.GET("/accounts/:id", server.AccountHdl.GetById)
 	server.Router.POST("/transactions", server.TransactionHdl.Insert)
 
 	// ============= TEMPLATE ROUTES =============
