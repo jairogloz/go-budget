@@ -25,9 +25,9 @@ func (r repository) Insert(transaction *core.Transaction, newCategory bool) (*co
 	var updatedAccount core.Account
 
 	callback := func(sessionContext mongo.SessionContext) (interface{}, error) {
-		if transaction.ID == "" {
+		if transaction.ID == nil {
 			// Generate new mongo ObjectId
-			transaction.ID = primitive.NewObjectID().Hex()
+			transaction.ID = primitive.NewObjectID()
 		}
 
 		_, err := r.txCol.InsertOne(sessionContext, transaction)
