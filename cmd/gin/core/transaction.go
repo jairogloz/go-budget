@@ -35,7 +35,7 @@ type TransactionHandler interface {
 }
 
 // ToDomain converts a TransactionCreate into a core.Transaction.
-func (t TransactionCreate) ToDomain() *core.Transaction {
+func (t TransactionCreate) ToDomain(userId string) *core.Transaction {
 	now := time.Now()
 
 	domainT := &core.Transaction{
@@ -44,6 +44,7 @@ func (t TransactionCreate) ToDomain() *core.Transaction {
 		Description: t.Description,
 		CreatedAt:   &now,
 		UpdatedAt:   &now,
+		UserId:      userId,
 	}
 
 	if t.Category != nil {

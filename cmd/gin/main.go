@@ -10,6 +10,7 @@ import (
 	transactionService "github.com/jairogloz/go-budget/pkg/domain/services/transaction"
 	"github.com/jairogloz/go-budget/pkg/mongo"
 	"github.com/jairogloz/go-budget/pkg/mongo/account"
+	"github.com/jairogloz/go-budget/pkg/mongo/category"
 	"github.com/jairogloz/go-budget/pkg/mongo/transaction"
 	"github.com/joho/godotenv"
 	"log"
@@ -34,7 +35,8 @@ func main() {
 	defer disconnectFunc()
 
 	txRepo := transaction.NewRepository(mongoClient)
-	txService := transactionService.NewService(txRepo)
+	catRepo := category.NewRepository(mongoClient)
+	txService := transactionService.NewService(txRepo, catRepo)
 	txHandler := transactionHandler.NewHandler(txService)
 
 	accountRepo := account.NewRepository(mongoClient)

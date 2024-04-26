@@ -19,7 +19,8 @@ func (h Handler) Insert(c *gin.Context) {
 		isNewCategory = transactionCreate.Category.IsNew
 	}
 
-	domainTx := transactionCreate.ToDomain()
+	// Todo: take userId from authentication
+	domainTx := transactionCreate.ToDomain("1")
 	updatedAccount, err := h.service.Insert(domainTx, isNewCategory)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

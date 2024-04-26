@@ -2,6 +2,7 @@ package transaction
 
 import (
 	"context"
+	"errors"
 	"github.com/jairogloz/go-budget/pkg/domain/core"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -11,6 +12,7 @@ import (
 )
 
 // Insert inserts a new transaction into the database.
+// TODO: this function should be refactor to use a transactional approach: it should only update transaction
 func (r repository) Insert(transaction *core.Transaction, newCategory bool) (*core.Account, error) {
 
 	session, err := r.client.StartSession()
@@ -34,6 +36,7 @@ func (r repository) Insert(transaction *core.Transaction, newCategory bool) (*co
 			return nil, err
 		}
 
+		// ==================== UPDATE ACCOUNT BALANCE ====================
 		// Create objectId based on account id
 		oid, err := primitive.ObjectIDFromHex(transaction.AccountId)
 		if err != nil {
@@ -48,6 +51,10 @@ func (r repository) Insert(transaction *core.Transaction, newCategory bool) (*co
 
 		err = r.accCol.FindOneAndUpdate(sessionContext, filter, update, opts).Decode(&updatedAccount)
 		if err != nil {
+			if errors.Is(err, mongo.ErrNoDocuments) {
+				log.Println("account not found", err.Error())
+				return nil, err
+			}
 			log.Println("failed to update account balance", err.Error())
 			return nil, err
 		}

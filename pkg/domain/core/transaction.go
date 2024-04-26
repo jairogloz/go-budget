@@ -14,6 +14,7 @@ type Transaction struct {
 	Description string     `json:"description" bson:"description"`
 	ID          string     `json:"id" bson:"_id"`
 	UpdatedAt   *time.Time `json:"updated_at" bson:"updated_at"`
+	UserId      string     `json:"user_id" bson:"user_id"`
 }
 
 // TransactionRepository exposes the methods to interact with the transaction
