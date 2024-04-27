@@ -6,6 +6,7 @@
         table {
             border-collapse: collapse;
         }
+
         th, td {
             border: 1px solid black;
             padding: 10px;
@@ -15,7 +16,7 @@
 <body>
 <h1>{{.account.Name}}</h1>
 <div>
-    <p>Current Balance: $<span id="currentBalance">{{.account.Balance}}</span>
+    <p>Current Balance: $<span id="currentBalance">{{printf "%.2f" .account.Balance}}</span>
         <button>Rebalance</button>
     </p>
 </div>
@@ -38,23 +39,10 @@
         <select id="category" name="category" required>
             <!-- Add your categories here -->
             <option value="none">None</option>
-            <option value="adventurer_explorer">Adventurer/Explorer</option>
-            <option value="career_champion">Career Champion</option>
-            <option value="code_collaborator">Code Collaborator</option>
-            <option value="community_hero">Community Hero</option>
-            <option value="devoted_partner">Devoted Partner</option>
-            <option value="family_anchor">Family Anchor</option>
-            <option value="health_advocate">Health Advocate</option>
-            <option value="inspired_creator">Inspired Creator</option>
-            <option value="lifelong_learner">Lifelong Learner</option>
-            <option value="responsible_steward">Responsible Steward</option>
-            <option value="social_connector">Social Connector</option>
-            <option value="soul_nurturer">Soul Nurturer</option>
-            <option value="spiritual_seeker">Spiritual Seeker</option>
-            <option value="trusted_friend">Trusted Friend</option>
-            <option value="visionary_leader">Visionary Leader (Business)</option>
-            <option value="visionary_planner">Visionary Planner</option>
-            <option value="wealth_guardian">Wealth Guardian</option>
+            <option value="fixed_costs">Fixed Costs</option>
+            <option value="investments">Investments</option>
+            <option value="saving_goals">Saving Goals</option>
+            <option value="guilt_free">Guilt Free</option>
         </select>
 
         <button type="submit">Add Transaction</button>
@@ -76,7 +64,9 @@
         <td>{{.Description}}</td>
         <td>{{.Category}}</td>
         <td>${{printf "%.2f" .Amount}}</td>
-        <td><button onclick="deleteTransaction('{{.ID}}')">Delete</button></td>
+        <td>
+            <button onclick="deleteTransaction('{{.ID}}')">Delete</button>
+        </td>
     </tr>
     {{end}}
     </tbody>
@@ -91,7 +81,7 @@
         if (!confirmed) {
             return;
         }
-        fetch('/transactions/'+transactionID, {
+        fetch('/transactions/' + transactionID, {
             method: 'DELETE',
         })
             .then(response => {
@@ -113,14 +103,14 @@
         document.getElementById('pendingDelta').textContent = delta.toFixed(2);
     }
 
-    function initPage(){
+    function initPage() {
         calculateDelta();
         document.getElementById('description').focus();
     }
 
     document.addEventListener('DOMContentLoaded', initPage);
 
-    document.getElementById('transactionForm').addEventListener('submit', function(event) {
+    document.getElementById('transactionForm').addEventListener('submit', function (event) {
         event.preventDefault();
 
         var description = document.getElementById('description').value;

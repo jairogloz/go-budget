@@ -85,8 +85,15 @@ func main() {
 			c.JSON(500, gin.H{"error": "Internal server error"})
 			return
 		}
+
+		var totalBalance float64
+		for _, a := range accounts {
+			totalBalance += a.Balance
+		}
+
 		c.HTML(200, "accounts.tmpl", gin.H{
-			"accounts": accounts,
+			"accounts":     accounts,
+			"totalBalance": totalBalance,
 		})
 	})
 
