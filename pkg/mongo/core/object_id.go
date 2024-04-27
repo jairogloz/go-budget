@@ -1,7 +1,7 @@
 package core
 
 import (
-	"errors"
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -13,5 +13,5 @@ func ObjectIDToString(id interface{}) (string, error) {
 		return objectID.Hex(), nil
 	}
 
-	return "", errors.New("failed to cast id to primitive.ObjectID")
+	return "", fmt.Errorf("failed to cast id to primitive.ObjectID, got %T", id)
 }

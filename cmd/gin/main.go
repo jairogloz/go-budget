@@ -63,7 +63,7 @@ func main() {
 	server.Router.POST("/accounts", auth.AuthRequired(), server.AccountHdl.Create)
 
 	// Transaction routes
-	server.Router.POST("/transactions", server.TransactionHdl.Insert)
+	server.Router.POST("/transactions", auth.AuthRequired(), server.TransactionHdl.Insert)
 
 	// ============= TEMPLATE ROUTES =============
 	server.Router.GET("/", func(c *gin.Context) {

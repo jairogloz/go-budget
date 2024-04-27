@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/jairogloz/go-budget/pkg/domain/core"
+	core2 "github.com/jairogloz/go-budget/pkg/mongo/core"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -58,6 +59,12 @@ func (r repository) Insert(transaction *core.Transaction, newCategory bool) (*co
 			log.Println("failed to update account balance", err.Error())
 			return nil, err
 		}
+		accId, err := core2.ObjectIDToString(updatedAccount.ID)
+		if err != nil {
+			log.Println("failed to convert account id to string", err.Error())
+			return nil, err
+		}
+		updatedAccount.ID = accId
 
 		return nil, nil
 	}

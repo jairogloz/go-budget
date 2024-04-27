@@ -3,6 +3,7 @@ package account
 import (
 	"context"
 	"github.com/jairogloz/go-budget/pkg/domain/core"
+	core2 "github.com/jairogloz/go-budget/pkg/mongo/core"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
@@ -27,6 +28,12 @@ func (r repository) GetByID(userId, id string) (core.Account, error) {
 		log.Println(err)
 		return core.Account{}, err
 	}
+	idString, err := core2.ObjectIDToString(account.ID)
+	if err != nil {
+		log.Println("Error converting account id to string", err.Error())
+		return core.Account{}, err
+	}
+	account.ID = idString
 
 	return account, nil
 }

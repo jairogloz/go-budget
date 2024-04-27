@@ -11,9 +11,8 @@ import (
 // Insert inserts a new category into the database.
 func (r repository) Insert(category *core.Category) (*core.Category, error) {
 
-	if category.ID == nil {
-		category.ID = primitive.NewObjectID()
-	}
+	objectID := primitive.NewObjectID()
+	category.ID = objectID
 
 	_, err := r.catCol.InsertOne(context.TODO(), category)
 	if err != nil {
@@ -24,6 +23,7 @@ func (r repository) Insert(category *core.Category) (*core.Category, error) {
 		}
 		return nil, err
 	}
+	category.ID = objectID.Hex()
 
 	return category, nil
 }
