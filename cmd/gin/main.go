@@ -5,6 +5,7 @@ import (
 	ginCore "github.com/jairogloz/go-budget/cmd/gin/core"
 	accHandler "github.com/jairogloz/go-budget/cmd/gin/handlers/account"
 	transactionHandler "github.com/jairogloz/go-budget/cmd/gin/handlers/transaction"
+	"github.com/jairogloz/go-budget/cmd/gin/middleware/auth"
 	accService "github.com/jairogloz/go-budget/pkg/domain/services/account"
 	transactionService "github.com/jairogloz/go-budget/pkg/domain/services/transaction"
 	"github.com/jairogloz/go-budget/pkg/mongo"
@@ -54,8 +55,13 @@ func main() {
 	}
 
 	// ============= BACKEND ROUTES =============
+
+	// Account routes
 	server.Router.GET("/accounts", server.AccountHdl.List)
 	server.Router.GET("/accounts/:id", server.AccountHdl.GetById)
+	server.Router.POST("/accounts", auth.AuthRequired(), server.AccountHdl.Create)
+
+	// Transaction routes
 	server.Router.POST("/transactions", server.TransactionHdl.Insert)
 
 	// ============= TEMPLATE ROUTES =============

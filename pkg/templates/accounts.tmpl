@@ -12,5 +12,42 @@
     </li>
     {{end}}
 </ul>
+
+<h2>Create New Account</h2>
+<form id="createAccountForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="initialBalance">Initial Balance:</label>
+    <input type="number" step="0.01" id="initialBalance" name="initialBalance" required>
+
+    <button type="submit">Create Account</button>
+</form>
+
 </body>
+<script>
+    document.getElementById('createAccountForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        var name = document.getElementById('name').value;
+        var initialBalance = document.getElementById('initialBalance').value;
+
+        var newAccount = {
+            name: name,
+            initialBalance: parseFloat(initialBalance)
+        }
+        console.log(newAccount)
+
+        fetch('/accounts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newAccount)
+        })
+            .then(response => response.json())
+            .then(data => {
+                location.reload();
+            });
+    });
+</script>
 </html>

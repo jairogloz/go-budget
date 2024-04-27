@@ -36,7 +36,7 @@ type TransactionHandler interface {
 
 // ToDomain converts a TransactionCreate into a core.Transaction.
 func (t TransactionCreate) ToDomain(userId string) *core.Transaction {
-	now := time.Now()
+	now := time.Now().UTC()
 
 	domainT := &core.Transaction{
 		Amount:      t.Amount,
