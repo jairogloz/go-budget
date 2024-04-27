@@ -2,20 +2,30 @@
 <html lang="en">
 <head>
     <title>{{.Account.Name}}</title>
+    <script>
+        function calculateDelta() {
+            var currentBalance = parseFloat(document.getElementById('currentBalance').textContent);
+            var newBalance = parseFloat(document.getElementById('newBalance').value);
+            var delta = newBalance - currentBalance;
+            document.getElementById('pendingDelta').textContent = delta.toFixed(2);
+        }
+
+        document.addEventListener('DOMContentLoaded', calculateDelta);
+    </script>
 </head>
 <body>
 <h1>{{.account.Name}}</h1>
 <div>
-    <p>Current Balance: ${{.account.Balance}}
+    <p>Current Balance: $<span id="currentBalance">{{.account.Balance}}</span>
         <button>Rebalance</button>
     </p>
 </div>
 <div>
     <label for="newBalance">New balance:</label>
-    <input type="number" id="newBalance" name="newBalance">
+    <input type="number" id="newBalance" name="newBalance" oninput="calculateDelta()">
 </div>
 <div>
-    <p>Pending delta: $10</p>
+    <p>Pending delta: $<span id="pendingDelta">0.00</span></p>
 </div>
 <div>
     <input size="50" type="text" id="newTransaction" name="newTransaction">
