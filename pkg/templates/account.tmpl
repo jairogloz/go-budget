@@ -2,6 +2,15 @@
 <html lang="en">
 <head>
     <title>{{.Account.Name}}</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+        }
+    </style>
 </head>
 <body>
 <h1>{{.account.Name}}</h1>
@@ -52,16 +61,50 @@
     </form>
 </div>
 <h2>Transactions</h2>
-<ul>
+<table>
+    <thead>
+    <tr>
+        <th>Description</th>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
     {{range .transactions}}
-    <li>
-        <p>"{{.Description}}" #{{.Category}} ${{.Amount}}</p>
-    </li>
+    <tr>
+        <td>{{.Description}}</td>
+        <td>{{.Category}}</td>
+        <td>${{printf "%.2f" .Amount}}</td>
+        <td><button onclick="deleteTransaction('{{.ID}}')">Delete</button></td>
+    </tr>
     {{end}}
-</ul>
+    </tbody>
+</table>
+
 </body>
 
 <script>
+
+    function deleteTransaction(transactionID) {
+        var confirmed = confirm('Are you sure you want to delete this transaction?');
+        if (!confirmed) {
+            return;
+        }
+        fetch('/transactions/'+transactionID, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                location.reload()
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Failed to delete transaction: ' + error.message);
+            });
+    }
 
     function calculateDelta() {
         var currentBalance = parseFloat(document.getElementById('currentBalance').textContent);

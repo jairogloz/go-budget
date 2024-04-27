@@ -64,6 +64,7 @@ func main() {
 
 	// Transaction routes
 	server.Router.POST("/transactions", auth.AuthRequired(), server.TransactionHdl.Insert)
+	server.Router.DELETE("/transactions/:id", auth.AuthRequired(), server.TransactionHdl.Delete)
 
 	// ============= TEMPLATE ROUTES =============
 	server.Router.GET("/", func(c *gin.Context) {

@@ -31,6 +31,7 @@ type TransactionCategory struct {
 
 // TransactionHandler exposes the handlers for the transactions services.
 type TransactionHandler interface {
+	Delete(c *gin.Context)
 	Insert(c *gin.Context)
 }
 
