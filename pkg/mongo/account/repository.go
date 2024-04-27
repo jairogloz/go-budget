@@ -10,13 +10,15 @@ import (
 // as the underlying database.
 type repository struct {
 	client *mongo.Client
-	col    *mongo.Collection
+	accCol *mongo.Collection
+	txCol  *mongo.Collection
 }
 
 // NewRepository creates a new account repository.
 func NewRepository(client *mongo.Client) core.AccountRepository {
 	return &repository{
 		client: client,
-		col:    client.Database(goBudgetMongo.DatabaseNameGoBudget).Collection(goBudgetMongo.CollectionNameAccounts),
+		accCol: client.Database(goBudgetMongo.DatabaseNameGoBudget).Collection(goBudgetMongo.CollectionNameAccounts),
+		txCol:  client.Database(goBudgetMongo.DatabaseNameGoBudget).Collection(goBudgetMongo.CollectionNameTransactions),
 	}
 }

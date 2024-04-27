@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jairogloz/go-budget/cmd/gin/core"
 	"net/http"
+	"os"
 )
 
 // AuthRequired for now, simply inserts a user ID into the context.
@@ -23,6 +24,9 @@ func AuthRequired() gin.HandlerFunc {
 		// Inject the user ID into the context
 		// Todo: change this to change userID
 		testUserID := "1"
+		if os.Getenv("SERVER_MODE") == "development" {
+			testUserID = "test"
+		}
 		c.Request = c.Request.WithContext(context.WithValue(c.Request.Context(), core.UserIDKey, testUserID))
 
 		c.Next()

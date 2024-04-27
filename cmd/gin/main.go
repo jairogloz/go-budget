@@ -14,11 +14,9 @@ import (
 	"github.com/jairogloz/go-budget/pkg/mongo/transaction"
 	"github.com/joho/godotenv"
 	"log"
+	"net/http"
 	"os"
 )
-
-// todo: remove this and take from auth
-var userId = "1"
 
 func main() {
 
@@ -72,8 +70,16 @@ func main() {
 			"title": "Main website",
 		})
 	})
-	server.Router.GET("/my-accounts", func(c *gin.Context) {
-		accounts, err := server.AccountSrv.List(userId)
+	server.Router.GET("/my-accounts", auth.AuthRequired(), func(c *gin.Context) {
+
+		// Retrieve the user ID from the context
+		userID := c.Request.Context().Value(ginCore.UserIDKey).(string)
+		if userID == "" {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "user ID not found in the context"})
+			return
+		}
+
+		accounts, err := server.AccountSrv.List(userID)
 		if err != nil {
 			log.Printf("Error getting accounts: %v", err)
 			c.JSON(500, gin.H{"error": "Internal server error"})
@@ -84,19 +90,26 @@ func main() {
 		})
 	})
 
-	server.Router.GET("/my-accounts/:id", func(c *gin.Context) {
+	server.Router.GET("/my-accounts/:id", auth.AuthRequired(), func(c *gin.Context) {
+
+		// Retrieve the user ID from the context
+		userID := c.Request.Context().Value(ginCore.UserIDKey).(string)
+		if userID == "" {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "user ID not found in the context"})
+			return
+		}
 
 		// get id from path
 		id := c.Param("id")
 
-		queriedAccount, err := server.AccountSrv.GetByID(userId, id)
+		queriedAccount, err := server.AccountSrv.GetByID(userID, id)
 		if err != nil {
 			log.Printf("Error getting account: %v", err)
 			c.JSON(500, gin.H{"error": "Internal server error"})
 			return
 		}
 
-		txs, err := server.TxService.FindByAccountID(userId, id)
+		txs, err := server.TxService.FindByAccountID(userID, id)
 		if err != nil {
 			log.Printf("Error getting transactions: %v", err)
 			c.JSON(500, gin.H{"error": "Internal server error"})

@@ -8,8 +8,8 @@ import (
 
 // AccountCreate is the struct that represents the request to create a new account.
 type AccountCreate struct {
-	Name           string  `json:"name" binding:"required"`
-	InitialBalance float64 `json:"initial_balance" binding:"required"`
+	Name           string   `json:"name" binding:"required"`
+	InitialBalance *float64 `json:"initial_balance" binding:"required"`
 }
 
 // ToDomain converts an AccountCreate into a core.Account.
@@ -17,8 +17,8 @@ func (a AccountCreate) ToDomain(userId string) *core.Account {
 	now := time.Now().UTC()
 	return &core.Account{
 		Name:           a.Name,
-		InitialBalance: a.InitialBalance,
-		Balance:        a.InitialBalance,
+		InitialBalance: *a.InitialBalance,
+		Balance:        *a.InitialBalance,
 		UserId:         userId,
 		CreatedAt:      &now,
 		UpdatedAt:      &now,

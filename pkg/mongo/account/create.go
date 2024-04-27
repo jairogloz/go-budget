@@ -22,7 +22,7 @@ func (r repository) Create(account *core.Account) error {
 
 	log.Println("about to insert account into database")
 
-	_, err := r.col.InsertOne(ctx, account)
+	_, err := r.accCol.InsertOne(ctx, account)
 	if err != nil {
 		log.Println("failed to insert account into database", err.Error())
 	}

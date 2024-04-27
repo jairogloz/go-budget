@@ -23,7 +23,7 @@ func (r repository) GetByID(userId, id string) (core.Account, error) {
 	defer cancel()
 
 	var account core.Account
-	err = r.col.FindOne(ctx, bson.M{"_id": oid, "user_id": userId}).Decode(&account)
+	err = r.accCol.FindOne(ctx, bson.M{"_id": oid, "user_id": userId}).Decode(&account)
 	if err != nil {
 		log.Println(err)
 		return core.Account{}, err

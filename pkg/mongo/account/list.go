@@ -18,7 +18,7 @@ func (r repository) List(userId string) ([]core.Account, error) {
 
 	findOpts := options.Find()
 	findOpts.SetLimit(100)
-	cursor, err := r.col.Find(ctx, bson.M{"user_id": userId}, findOpts)
+	cursor, err := r.accCol.Find(ctx, bson.M{"user_id": userId}, findOpts)
 	if err != nil {
 		fmt.Println("Error finding accounts", err.Error())
 		return nil, err
