@@ -5,7 +5,6 @@ import (
 	ginCore "github.com/jairogloz/go-budget/cmd/gin/core"
 	accHandler "github.com/jairogloz/go-budget/cmd/gin/handlers/account"
 	transactionHandler "github.com/jairogloz/go-budget/cmd/gin/handlers/transaction"
-	domainCore "github.com/jairogloz/go-budget/pkg/domain/core"
 	accService "github.com/jairogloz/go-budget/pkg/domain/services/account"
 	transactionService "github.com/jairogloz/go-budget/pkg/domain/services/transaction"
 	"github.com/jairogloz/go-budget/pkg/mongo"
@@ -51,6 +50,7 @@ func main() {
 		AccountSrv:     accountService,
 		Router:         router,
 		TransactionHdl: txHandler,
+		TxService:      txService,
 	}
 
 	// ============= BACKEND ROUTES =============
@@ -87,12 +87,17 @@ func main() {
 			c.JSON(500, gin.H{"error": "Internal server error"})
 			return
 		}
+
+		txs, err := server.TxService.FindByAccountID(userId, id)
+		if err != nil {
+			log.Printf("Error getting transactions: %v", err)
+			c.JSON(500, gin.H{"error": "Internal server error"})
+			return
+		}
+
 		c.HTML(200, "account.tmpl", gin.H{
-			"account": queriedAccount,
-			"transactions": []domainCore.Transaction{
-				{ID: "1", Amount: 100.0, Description: "Initial deposit", Category: strPtr("deposit")},
-				{ID: "2", Amount: -10.0, Description: "Coquita", Category: strPtr("food")},
-			},
+			"account":      queriedAccount,
+			"transactions": txs,
 		})
 	})
 

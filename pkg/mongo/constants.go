@@ -6,3 +6,5 @@ const (
 	CollectionNameCategories   = "categories"
 	CollectionNameTransactions = "transactions"
 )
+
+const TimeoutSeconds = 15

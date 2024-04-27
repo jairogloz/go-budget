@@ -12,4 +12,5 @@ type Server struct {
 	AccountSrv     core.AccountService
 	Router         *gin.Engine
 	TransactionHdl TransactionHandler
+	TxService      core.TransactionService
 }
