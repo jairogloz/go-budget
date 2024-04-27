@@ -26,7 +26,7 @@ type TransactionCreateResponse struct {
 // transaction.
 type TransactionCategory struct {
 	Name  string `json:"name" binding:"required"`
-	IsNew bool   `json:"is_new" binding:"required"`
+	IsNew *bool  `json:"is_new" binding:"required"`
 }
 
 // TransactionHandler exposes the handlers for the transactions services.

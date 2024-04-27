@@ -15,8 +15,8 @@ func (h Handler) Insert(c *gin.Context) {
 	}
 
 	isNewCategory := false
-	if transactionCreate.Category != nil {
-		isNewCategory = transactionCreate.Category.IsNew
+	if transactionCreate.Category != nil && transactionCreate.Category.IsNew != nil {
+		isNewCategory = *transactionCreate.Category.IsNew
 	}
 
 	// Todo: take userId from authentication

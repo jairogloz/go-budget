@@ -2,16 +2,6 @@
 <html lang="en">
 <head>
     <title>{{.Account.Name}}</title>
-    <script>
-        function calculateDelta() {
-            var currentBalance = parseFloat(document.getElementById('currentBalance').textContent);
-            var newBalance = parseFloat(document.getElementById('newBalance').value);
-            var delta = newBalance - currentBalance;
-            document.getElementById('pendingDelta').textContent = delta.toFixed(2);
-        }
-
-        document.addEventListener('DOMContentLoaded', calculateDelta);
-    </script>
 </head>
 <body>
 <h1>{{.account.Name}}</h1>
@@ -28,8 +18,22 @@
     <p>Pending delta: $<span id="pendingDelta">0.00</span></p>
 </div>
 <div>
-    <input size="50" type="text" id="newTransaction" name="newTransaction">
-    <button>Add Transaction</button>
+    <form id="transactionForm">
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description" required>
+
+        <label for="amount">Amount:</label>
+        <input type="number" step="0.01" id="amount" name="amount" required>
+
+        <label for="category">Category:</label>
+        <select id="category" name="category" required>
+            <!-- Add your categories here -->
+            <option value="category1">Category 1</option>
+            <option value="category2">Category 2</option>
+        </select>
+
+        <button type="submit">Add Transaction</button>
+    </form>
 </div>
 <h2>Transactions</h2>
 <ul>
@@ -40,4 +44,62 @@
     {{end}}
 </ul>
 </body>
+
+<script>
+
+    function calculateDelta() {
+        var currentBalance = parseFloat(document.getElementById('currentBalance').textContent);
+        var newBalance = parseFloat(document.getElementById('newBalance').value);
+        var delta = newBalance - currentBalance;
+        document.getElementById('pendingDelta').textContent = delta.toFixed(2);
+    }
+
+    function initPage(){
+        calculateDelta();
+        document.getElementById('description').focus();
+    }
+
+    document.addEventListener('DOMContentLoaded', initPage);
+
+    document.getElementById('transactionForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var description = document.getElementById('description').value;
+        var amount = document.getElementById('amount').value;
+        var category = document.getElementById('category').value;
+        var accountId = "{{.account.ID}}";
+
+        var transaction = {
+            description: description,
+            amount: parseFloat(amount),
+            category: {
+                name: category,
+                is_new: false
+            },
+            account_id: accountId
+        };
+
+        fetch('/transactions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(transaction)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                location.reload();
+                document.getElementById('transactionForm').reset();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Failed to add transaction: ' + error.message);
+            });
+    });
+</script>
 </html>
