@@ -26,28 +26,41 @@
 
 </body>
 <script>
-    document.getElementById('createAccountForm').addEventListener('submit', function (event) {
-        event.preventDefault();
-        var name = document.getElementById('name').value;
-        var initialBalance = document.getElementById('initialBalance').value;
+    document.addEventListener('DOMContentLoaded', function () {
 
-        var newAccount = {
-            name: name,
-            initialBalance: parseFloat(initialBalance)
-        }
-        console.log(newAccount)
+        document.getElementById('createAccountForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var name = document.getElementById('name').value;
+            var initialBalance = document.getElementById('initialBalance').value;
 
-        fetch('/accounts', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(newAccount)
-        })
-            .then(response => response.json())
-            .then(data => {
-                location.reload();
-            });
+            var newAccount = {
+                name: name,
+                initial_balance: parseFloat(initialBalance)
+            }
+
+            fetch('/accounts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newAccount)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    location.reload();
+                    document.getElementById('createAccountForm').reset();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('Failed to add account: ' + error.message);
+                });
+        });
+
     });
 </script>
 </html>
