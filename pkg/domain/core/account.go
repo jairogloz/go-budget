@@ -16,6 +16,7 @@ type Account struct {
 // AccountRepository exposes the methods to interact with the account storage.
 type AccountRepository interface {
 	Create(account *Account) error
+	Delete(userId, id string) error
 	GetByID(userId, id string) (Account, error)
 	List(userId string) ([]Account, error)
 }
@@ -23,7 +24,7 @@ type AccountRepository interface {
 // AccountService exposes the services provided by this application on the account domain.
 type AccountService interface {
 	Create(account *Account) error
-	//DeleteAccount(userId, id string) error
+	Delete(userId, id string) error
 	GetByID(userId, id string) (Account, error)
 	List(userId string) ([]Account, error)
 }

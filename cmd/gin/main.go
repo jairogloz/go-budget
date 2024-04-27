@@ -57,6 +57,7 @@ func main() {
 	// ============= BACKEND ROUTES =============
 
 	// Account routes
+	server.Router.DELETE("/accounts/:id", auth.AuthRequired(), server.AccountHdl.Delete)
 	server.Router.GET("/accounts", server.AccountHdl.List)
 	server.Router.GET("/accounts/:id", server.AccountHdl.GetById)
 	server.Router.POST("/accounts", auth.AuthRequired(), server.AccountHdl.Create)

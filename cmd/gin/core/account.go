@@ -28,6 +28,7 @@ func (a AccountCreate) ToDomain(userId string) *core.Account {
 // AccountHandler exposes the handlers for the account domain.
 type AccountHandler interface {
 	Create(c *gin.Context)
+	Delete(c *gin.Context)
 	List(c *gin.Context)
 	GetById(c *gin.Context)
 }

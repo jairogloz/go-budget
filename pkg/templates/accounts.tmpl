@@ -2,16 +2,38 @@
 <html lang="en">
 <head>
     <title>Accounts</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+        }
+    </style>
 </head>
 <body>
 <h1>Accounts</h1>
-<ul>
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Balance</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
     {{range .accounts}}
-    <li>
-        <a href="/my-accounts/{{.ID}}">{{.Name}}</a>: {{.Balance}}
-    </li>
+    <tr>
+        <td><a href="/my-accounts/{{.ID}}">{{.Name}}</a></td>
+        <td>$ {{printf "%.2f" .Balance}}</td>
+        <td>
+            <button onclick="deleteAccount('{{.ID}}')">Delete</button>
+        </td>
+    </tr>
     {{end}}
-</ul>
+    </tbody>
+</table>
 
 <h2>Create New Account</h2>
 <form id="createAccountForm">
@@ -26,6 +48,27 @@
 
 </body>
 <script>
+
+    function deleteAccount(accountID) {
+        var confirmed = confirm('Are you sure you want to delete this account? All account transactions will be deleted as well.');
+        if (!confirmed) {
+            return;
+        }
+        fetch('/accounts/'+accountID, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                location.reload()
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Failed to delete account: ' + error.message);
+            });
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
 
         document.getElementById('createAccountForm').addEventListener('submit', function (event) {
