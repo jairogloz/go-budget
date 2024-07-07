@@ -6,7 +6,10 @@ import (
 	accHandler "github.com/jairogloz/go-budget/cmd/gin/handlers/account"
 	transactionHandler "github.com/jairogloz/go-budget/cmd/gin/handlers/transaction"
 	"github.com/jairogloz/go-budget/cmd/gin/middleware/auth"
+	"github.com/jairogloz/go-budget/pkg/domain/core"
+	"github.com/jairogloz/go-budget/pkg/domain/services/access_control"
 	accService "github.com/jairogloz/go-budget/pkg/domain/services/account"
+	"github.com/jairogloz/go-budget/pkg/domain/services/app_context"
 	transactionService "github.com/jairogloz/go-budget/pkg/domain/services/transaction"
 	"github.com/jairogloz/go-budget/pkg/mongo"
 	"github.com/jairogloz/go-budget/pkg/mongo/account"
@@ -35,6 +38,8 @@ func main() {
 	}
 	defer disconnectFunc()
 
+	ctxHdl := app_context.NewHandler()
+
 	txRepo := transaction.NewRepository(mongoClient)
 	catRepo := category.NewRepository(mongoClient)
 	txService := transactionService.NewService(txRepo, catRepo)
@@ -42,7 +47,7 @@ func main() {
 
 	accountRepo := account.NewRepository(mongoClient)
 	accountService := accService.NewService(accountRepo)
-	accountHandler := accHandler.NewHandler(accountService)
+	accountHandler := accHandler.NewHandler(accountService, ctxHdl)
 
 	server := ginCore.Server{
 		AccountHdl:     accountHandler,
@@ -52,17 +57,22 @@ func main() {
 		TxService:      txService,
 	}
 
+	accessCtrlService := access_control.NewService()
+	authHdl := auth.NewHandler(accessCtrlService)
+
+	router.Use(authHdl.AuthRequired())
+
 	// ============= BACKEND ROUTES =============
 
 	// Account routes
-	server.Router.DELETE("/accounts/:id", auth.AuthRequired(), server.AccountHdl.Delete)
+	server.Router.DELETE("/accounts/:id", server.AccountHdl.Delete)
 	server.Router.GET("/accounts", server.AccountHdl.List)
 	server.Router.GET("/accounts/:id", server.AccountHdl.GetById)
-	server.Router.POST("/accounts", auth.AuthRequired(), server.AccountHdl.Create)
+	server.Router.POST("/accounts", server.AccountHdl.Create)
 
 	// Transaction routes
-	server.Router.POST("/transactions", auth.AuthRequired(), server.TransactionHdl.Insert)
-	server.Router.DELETE("/transactions/:id", auth.AuthRequired(), server.TransactionHdl.Delete)
+	server.Router.POST("/transactions", server.TransactionHdl.Insert)
+	server.Router.DELETE("/transactions/:id", server.TransactionHdl.Delete)
 
 	// ============= TEMPLATE ROUTES =============
 	server.Router.GET("/", func(c *gin.Context) {
@@ -70,10 +80,10 @@ func main() {
 			"title": "Main website",
 		})
 	})
-	server.Router.GET("/my-accounts", auth.AuthRequired(), func(c *gin.Context) {
+	server.Router.GET("/my-accounts", func(c *gin.Context) {
 
 		// Retrieve the user ID from the context
-		userID := c.Request.Context().Value(ginCore.UserIDKey).(string)
+		userID := c.Request.Context().Value(core.CtxKeyUser).(string)
 		if userID == "" {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "user ID not found in the context"})
 			return
@@ -97,10 +107,10 @@ func main() {
 		})
 	})
 
-	server.Router.GET("/my-accounts/:id", auth.AuthRequired(), func(c *gin.Context) {
+	server.Router.GET("/my-accounts/:id", func(c *gin.Context) {
 
 		// Retrieve the user ID from the context
-		userID := c.Request.Context().Value(ginCore.UserIDKey).(string)
+		userID := c.Request.Context().Value(core.CtxKeyUser).(string)
 		if userID == "" {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "user ID not found in the context"})
 			return

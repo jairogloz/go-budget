@@ -10,7 +10,7 @@ import (
 )
 
 // Create creates a new account.
-func (r repository) Create(account *core.Account) error {
+func (r repository) Create(user *core.User, account *core.Account) error {
 
 	if account.ID == nil {
 		// Generate new mongo ObjectId
