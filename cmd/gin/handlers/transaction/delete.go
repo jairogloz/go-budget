@@ -2,14 +2,14 @@ package transaction
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/jairogloz/go-budget/cmd/gin/core"
+	pkgCore "github.com/jairogloz/go-budget/pkg/domain/core"
 	"net/http"
 )
 
 // Delete removes a transaction from the database.
 func (h Handler) Delete(c *gin.Context) {
 	// Retrieve the user ID from the context
-	userID := c.Request.Context().Value(core.UserIDKey).(string)
+	userID := c.Request.Context().Value(pkgCore.CtxKeyUser).(string)
 	if userID == "" {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "user ID not found in the context"})
 		return

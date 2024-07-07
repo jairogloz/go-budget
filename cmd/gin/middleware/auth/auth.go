@@ -3,31 +3,39 @@ package auth
 import (
 	"context"
 	"github.com/gin-gonic/gin"
-	"github.com/jairogloz/go-budget/cmd/gin/core"
-	"net/http"
-	"os"
+	pkgCore "github.com/jairogloz/go-budget/pkg/domain/core"
 )
 
 // AuthRequired for now, simply inserts a user ID into the context.
-func AuthRequired() gin.HandlerFunc {
+func (h *Handler) AuthRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Here you would normally check for a valid token in the request headers and validate it
-		// For simplicity, let's just simulate an authenticated user with a boolean
-		isAuthenticated := true
-
-		if !isAuthenticated {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-			c.Abort()
+		// todo: potentially move to an auth service
+		// todo: implement actual authentication
+		userInfo, err := h.AccessControlService.AuthenticateUser("google", "test")
+		if err != nil {
+			c.JSON(500, gin.H{"error": err.Error()})
 			return
 		}
 
-		// Inject the user ID into the context
-		// Todo: change this to change userID
-		testUserID := "1"
-		if os.Getenv("SERVER_MODE") == "development" {
-			testUserID = "test"
+		// todo: query user from database
+		user := &pkgCore.User{
+			ID:       "1",
+			Level:    pkgCore.UserLevelFree,
+			UserInfo: &userInfo,
 		}
-		c.Request = c.Request.WithContext(context.WithValue(c.Request.Context(), core.UserIDKey, testUserID))
+
+		featureAccess, err := h.AccessControlService.GetFeatureAccess(user.Level)
+		if err != nil {
+			c.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+
+		user.FeatureAccess = &featureAccess
+
+		// Todo: Validate user has access to path
+
+		// Inject the user into the context
+		c.Request = c.Request.WithContext(context.WithValue(c.Request.Context(), pkgCore.CtxKeyUser, user))
 
 		c.Next()
 	}

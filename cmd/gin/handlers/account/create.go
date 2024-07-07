@@ -10,9 +10,10 @@ import (
 func (h Handler) Create(c *gin.Context) {
 
 	// Retrieve the user ID from the context
-	userID := c.Request.Context().Value(core.UserIDKey).(string)
-	if userID == "" {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "user ID not found in the context"})
+	user, err := h.ctxHdl.GetUser(c.Request.Context())
+	if err != nil {
+		// todo: log error
+		c.JSON(http.StatusInternalServerError, gin.H{"error": core.ErrMsgInternalServerError})
 		return
 	}
 
@@ -22,8 +23,8 @@ func (h Handler) Create(c *gin.Context) {
 		return
 	}
 
-	domainAccount := accountCreate.ToDomain(userID)
-	err := h.service.Create(domainAccount)
+	domainAccount := accountCreate.ToDomain(user.ID)
+	err = h.service.Create(user, domainAccount)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

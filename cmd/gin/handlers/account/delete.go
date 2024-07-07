@@ -10,14 +10,16 @@ import (
 func (h Handler) Delete(c *gin.Context) {
 
 	// Retrieve the user ID from the context
-	userID := c.Request.Context().Value(core.UserIDKey).(string)
-	if userID == "" {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "user ID not found in the context"})
+	user, err := h.ctxHdl.GetUser(c.Request.Context())
+	if err != nil {
+		// todo: log error
+		c.JSON(http.StatusInternalServerError, gin.H{"error": core.ErrMsgInternalServerError})
 		return
 	}
-	id := c.Param("id")
 
-	if err := h.service.Delete(userID, id); err != nil {
+	accountID := c.Param("id")
+
+	if err := h.service.Delete(user.ID, accountID); err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
