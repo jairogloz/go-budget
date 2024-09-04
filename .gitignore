@@ -90,3 +90,6 @@ Temporary Items
 # Air live-reload related files
 /tmp/
 /build-errors.log
+
+# Executables
+/go-budget-api

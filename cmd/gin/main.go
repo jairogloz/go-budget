@@ -15,24 +15,22 @@ import (
 	"github.com/jairogloz/go-budget/pkg/mongo/account"
 	"github.com/jairogloz/go-budget/pkg/mongo/category"
 	"github.com/jairogloz/go-budget/pkg/mongo/transaction"
-	"github.com/joho/godotenv"
 	"log"
 	"net/http"
-	"os"
 )
 
 func main() {
 
-	err := godotenv.Load()
+	config, err := core.LoadConfig()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatalf("error loading config: %s", err.Error())
 	}
 
 	router := gin.Default()
 
 	router.LoadHTMLGlob("pkg/templates/*")
 
-	mongoClient, disconnectFunc, err := mongo.ConnectMongoDB(os.Getenv("MONGO_URI"))
+	mongoClient, disconnectFunc, err := mongo.ConnectMongoDB(config.MongoURI)
 	if err != nil {
 		log.Fatalf("Error connecting to MongoDB: %v", err)
 	}
