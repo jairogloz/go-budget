@@ -16,6 +16,7 @@ import (
 	"github.com/jairogloz/go-budget/pkg/mongo/category"
 	"github.com/jairogloz/go-budget/pkg/mongo/transaction"
 	"log"
+	"net/http"
 )
 
 func main() {
@@ -59,18 +60,69 @@ func main() {
 
 	router.Use(authHdl.AuthRequired())
 
-	// ============= BACKEND ROUTES =============
+	server.Router.GET("/", func(c *gin.Context) {
+		c.HTML(200, "index.tmpl", gin.H{
+			"title": "Main website",
+		})
+	})
+	server.Router.GET("/my-accounts", func(c *gin.Context) {
 
-	// Account routes
-	server.Router.DELETE("/accounts/:id", server.AccountHdl.Delete)
-	server.Router.GET("/accounts", server.AccountHdl.List)
-	server.Router.GET("/accounts/:id", server.AccountHdl.GetById)
-	server.Router.POST("/accounts", server.AccountHdl.Create)
+		// Retrieve the user ID from the context
+		userID := c.Request.Context().Value(core.CtxKeyUser).(string)
+		if userID == "" {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "user ID not found in the context"})
+			return
+		}
 
-	// Transaction routes
-	server.Router.POST("/transactions", server.TransactionHdl.Insert)
-	server.Router.DELETE("/transactions/:id", server.TransactionHdl.Delete)
+		accounts, err := server.AccountSrv.List(userID)
+		if err != nil {
+			log.Printf("Error getting accounts: %v", err)
+			c.JSON(500, gin.H{"error": "Internal server error"})
+			return
+		}
+
+		var totalBalance float64
+		for _, a := range accounts {
+			totalBalance += a.Balance
+		}
+
+		c.HTML(200, "accounts.tmpl", gin.H{
+			"accounts":     accounts,
+			"totalBalance": totalBalance,
+		})
+	})
+
+	server.Router.GET("/my-accounts/:id", func(c *gin.Context) {
+
+		// Retrieve the user ID from the context
+		userID := c.Request.Context().Value(core.CtxKeyUser).(string)
+		if userID == "" {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "user ID not found in the context"})
+			return
+		}
+
+		// get id from path
+		id := c.Param("id")
+
+		queriedAccount, err := server.AccountSrv.GetByID(userID, id)
+		if err != nil {
+			log.Printf("Error getting account: %v", err)
+			c.JSON(500, gin.H{"error": "Internal server error"})
+			return
+		}
+
+		txs, err := server.TxService.FindByAccountID(userID, id)
+		if err != nil {
+			log.Printf("Error getting transactions: %v", err)
+			c.JSON(500, gin.H{"error": "Internal server error"})
+			return
+		}
+
+		c.HTML(200, "account.tmpl", gin.H{
+			"account":      queriedAccount,
+			"transactions": txs,
+		})
+	})
 
 	log.Fatalln(server.Router.Run(":8080"))
-
 }
