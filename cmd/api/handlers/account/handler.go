@@ -1,7 +1,7 @@
 package account
 
 import (
-	ginCore "github.com/jairogloz/go-budget/cmd/gin/core"
+	ginCore "github.com/jairogloz/go-budget/cmd/api/core"
 	domainCore "github.com/jairogloz/go-budget/pkg/domain/core"
 	"github.com/jairogloz/go-budget/pkg/domain/ports"
 )

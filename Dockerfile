@@ -7,7 +7,7 @@ WORKDIR /app
 COPY . .
 
 # Change directory to the cmd/gin folder
-WORKDIR /app/cmd/gin
+WORKDIR /app/cmd/api
 
 # Download dependencies
 RUN go mod tidy

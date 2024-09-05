@@ -2,7 +2,7 @@ package account
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/jairogloz/go-budget/cmd/gin/core"
+	"github.com/jairogloz/go-budget/cmd/api/core"
 	"net/http"
 )
 

@@ -2,10 +2,10 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	ginCore "github.com/jairogloz/go-budget/cmd/gin/core"
-	accHandler "github.com/jairogloz/go-budget/cmd/gin/handlers/account"
-	transactionHandler "github.com/jairogloz/go-budget/cmd/gin/handlers/transaction"
-	"github.com/jairogloz/go-budget/cmd/gin/middleware/auth"
+	ginCore "github.com/jairogloz/go-budget/cmd/api/core"
+	accHandler "github.com/jairogloz/go-budget/cmd/api/handlers/account"
+	transactionHandler "github.com/jairogloz/go-budget/cmd/api/handlers/transaction"
+	"github.com/jairogloz/go-budget/cmd/api/middleware/auth"
 	"github.com/jairogloz/go-budget/pkg/domain/core"
 	"github.com/jairogloz/go-budget/pkg/domain/services/access_control"
 	accService "github.com/jairogloz/go-budget/pkg/domain/services/account"

@@ -2,11 +2,13 @@ package account
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/jairogloz/go-budget/cmd/gin/core"
+	"github.com/jairogloz/go-budget/cmd/api/core"
 	"net/http"
 )
 
-func (h Handler) GetById(c *gin.Context) {
+// List lists the accounts for a given user.
+func (h Handler) List(c *gin.Context) {
+
 	// Retrieve the user ID from the context
 	user, err := h.ctxHdl.GetUser(c.Request.Context())
 	if err != nil {
@@ -15,11 +17,11 @@ func (h Handler) GetById(c *gin.Context) {
 		return
 	}
 
-	accountID := c.Param("id")
-	account, err := h.service.GetByID(user.ID, accountID)
+	accounts, err := h.service.List(user.ID)
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(200, account)
+
+	c.JSON(http.StatusOK, accounts)
 }
