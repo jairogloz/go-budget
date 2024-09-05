@@ -6,6 +6,7 @@ import (
 	accHandler "github.com/jairogloz/go-budget/cmd/api/handlers/account"
 	transactionHandler "github.com/jairogloz/go-budget/cmd/api/handlers/transaction"
 	"github.com/jairogloz/go-budget/cmd/api/middleware/auth"
+	"github.com/jairogloz/go-budget/cmd/web/handlers/transactions"
 	"github.com/jairogloz/go-budget/pkg/domain/core"
 	"github.com/jairogloz/go-budget/pkg/domain/services/access_control"
 	accService "github.com/jairogloz/go-budget/pkg/domain/services/account"
@@ -28,7 +29,7 @@ func main() {
 
 	router := gin.Default()
 
-	router.LoadHTMLGlob("pkg/templates/*")
+	router.LoadHTMLGlob("cmd/web/templates/*")
 
 	mongoClient, disconnectFunc, err := mongo.ConnectMongoDB(config.MongoURI)
 	if err != nil {
@@ -59,6 +60,10 @@ func main() {
 	authHdl := auth.NewHandler(accessCtrlService)
 
 	router.Use(authHdl.AuthRequired())
+
+	// ============= Transactions =============
+	txHdl := transactions.TransactionHandler{}
+	server.Router.GET("/transactions", txHdl.Transactions)
 
 	server.Router.GET("/", func(c *gin.Context) {
 		c.HTML(200, "index.tmpl", gin.H{
@@ -124,5 +129,5 @@ func main() {
 		})
 	})
 
-	log.Fatalln(server.Router.Run(":8080"))
+	log.Fatalln(server.Router.Run(":8081"))
 }

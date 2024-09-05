@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	ginCore "github.com/jairogloz/go-budget/cmd/api/core"
 	accHandler "github.com/jairogloz/go-budget/cmd/api/handlers/account"
@@ -16,6 +17,7 @@ import (
 	"github.com/jairogloz/go-budget/pkg/mongo/category"
 	"github.com/jairogloz/go-budget/pkg/mongo/transaction"
 	"log"
+	"time"
 )
 
 func main() {
@@ -27,7 +29,15 @@ func main() {
 
 	router := gin.Default()
 
-	router.LoadHTMLGlob("pkg/templates/*")
+	// Configure CORS middleware
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:8081"}, // Adjust as needed
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	mongoClient, disconnectFunc, err := mongo.ConnectMongoDB(config.MongoURI)
 	if err != nil {
