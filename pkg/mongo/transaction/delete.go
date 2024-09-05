@@ -37,7 +37,7 @@ func (r repository) Delete(userId, transactionID string) error {
 		}
 
 		// Update the account balance.
-		oid, err := primitive.ObjectIDFromHex(transaction.AccountId)
+		oid, err := primitive.ObjectIDFromHex(*transaction.AccountId)
 		if err != nil {
 			log.Println("failed to create object id", err.Error())
 			return nil, err

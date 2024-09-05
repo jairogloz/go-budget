@@ -2,79 +2,44 @@ package transaction
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"github.com/jairogloz/go-budget/pkg/domain/core"
-	core2 "github.com/jairogloz/go-budget/pkg/mongo/core"
-	"go.mongodb.org/mongo-driver/bson"
+	core2 "github.com/jairogloz/go-budget/pkg/mongo/transaction/core"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
+	"time"
 )
 
 // Insert inserts a new transaction into the database.
-// TODO: this function should be refactor to use a transactional approach: it should only update transaction
-func (r repository) Insert(transaction *core.Transaction, newCategory bool) (*core.Account, error) {
+// It takes a pointer to a core.Transaction as input and returns an error if the insertion fails.
+//
+// If the transaction is nil, it returns an error indicating that the transaction is nil.
+// It creates a context with a timeout of 15 seconds for the database operation.
+// It generates a new MongoDB ObjectID for the transaction.
+// It wraps the core.Transaction in a MongoTransaction struct with the generated ObjectID.
+// It attempts to insert the MongoTransaction into the database collection.
+// If the insertion fails, it logs the error and returns it.
+// If the insertion is successful, it returns nil.
+func (r repository) Insert(transaction *core.Transaction) error {
+	if transaction == nil {
+		return fmt.Errorf("transaction is nil")
+	}
 
-	session, err := r.client.StartSession()
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	txObjectID := primitive.NewObjectID()
+
+	mongoTx := core2.MongoTransaction{
+		ID:          txObjectID,
+		Transaction: *transaction,
+	}
+
+	_, err := r.txCol.InsertOne(ctx, mongoTx)
 	if err != nil {
-		log.Println("failed to start session", err.Error())
-		return nil, err
-	}
-	defer session.EndSession(context.Background())
-
-	var updatedAccount core.Account
-
-	callback := func(sessionContext mongo.SessionContext) (interface{}, error) {
-		if transaction.ID == nil {
-			// Generate new mongo ObjectId
-			transaction.ID = primitive.NewObjectID()
-		}
-
-		_, err := r.txCol.InsertOne(sessionContext, transaction)
-		if err != nil {
-			log.Println("failed to insert transaction into database", err.Error())
-			return nil, err
-		}
-
-		// ==================== UPDATE ACCOUNT BALANCE ====================
-		// Create objectId based on account id
-		oid, err := primitive.ObjectIDFromHex(transaction.AccountId)
-		if err != nil {
-			log.Println("failed to create object id", err.Error())
-			return nil, err
-		}
-		filter := bson.M{"_id": oid}
-		update := bson.M{"$inc": bson.M{"balance": transaction.Amount}}
-
-		// Use FindOneAndUpdate with ReturnDocument set to After
-		opts := options.FindOneAndUpdate().SetReturnDocument(options.After)
-
-		err = r.accCol.FindOneAndUpdate(sessionContext, filter, update, opts).Decode(&updatedAccount)
-		if err != nil {
-			if errors.Is(err, mongo.ErrNoDocuments) {
-				log.Println("account not found", err.Error())
-				return nil, err
-			}
-			log.Println("failed to update account balance", err.Error())
-			return nil, err
-		}
-		accId, err := core2.ObjectIDToString(updatedAccount.ID)
-		if err != nil {
-			log.Println("failed to convert account id to string", err.Error())
-			return nil, err
-		}
-		updatedAccount.ID = accId
-
-		return nil, nil
+		log.Println("failed to insert transaction into database", err.Error())
+		return err
 	}
 
-	_, err = session.WithTransaction(context.Background(), callback)
-	if err != nil {
-		log.Println("transaction failed", err.Error())
-		return nil, err
-	}
-
-	return &updatedAccount, nil
-
+	return nil
 }

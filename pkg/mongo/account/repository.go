@@ -1,7 +1,7 @@
 package account
 
 import (
-	"github.com/jairogloz/go-budget/pkg/domain/core"
+	"github.com/jairogloz/go-budget/pkg/domain/ports"
 	goBudgetMongo "github.com/jairogloz/go-budget/pkg/mongo"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -15,7 +15,7 @@ type repository struct {
 }
 
 // NewRepository creates a new account repository.
-func NewRepository(client *mongo.Client) core.AccountRepository {
+func NewRepository(client *mongo.Client) ports.AccountRepository {
 	return &repository{
 		client: client,
 		accCol: client.Database(goBudgetMongo.DatabaseNameGoBudget).Collection(goBudgetMongo.CollectionNameAccounts),

@@ -1,7 +1,7 @@
 package transaction
 
 import (
-	"github.com/jairogloz/go-budget/pkg/domain/core"
+	"github.com/jairogloz/go-budget/pkg/domain/ports"
 	goBudgetMongo "github.com/jairogloz/go-budget/pkg/mongo"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -15,7 +15,7 @@ type repository struct {
 }
 
 // NewRepository creates a new transaction repository.
-func NewRepository(client *mongo.Client) core.TransactionRepository {
+func NewRepository(client *mongo.Client) ports.TransactionRepository {
 	return &repository{
 		accCol: client.Database(goBudgetMongo.DatabaseNameGoBudget).Collection(goBudgetMongo.CollectionNameAccounts),
 		client: client,

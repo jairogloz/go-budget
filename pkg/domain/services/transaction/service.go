@@ -1,17 +1,19 @@
 package transaction
 
-import "github.com/jairogloz/go-budget/pkg/domain/core"
+import (
+	"github.com/jairogloz/go-budget/pkg/domain/ports"
+)
 
 // Service implements core.TransactionService and holds the required components to
 // perform the operations related to the transactions domain.
 type Service struct {
-	categoryRepo core.CategoryRepository
-	txRepo       core.TransactionRepository
+	categoryRepo ports.CategoryRepository
+	txRepo       ports.TransactionRepository
 }
 
 // NewService creates a new transaction service.
-func NewService(txRepo core.TransactionRepository,
-	catRepo core.CategoryRepository) core.TransactionService {
+func NewService(txRepo ports.TransactionRepository,
+	catRepo ports.CategoryRepository) ports.TransactionService {
 	return &Service{
 		categoryRepo: catRepo,
 		txRepo:       txRepo,

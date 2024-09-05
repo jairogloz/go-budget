@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/jairogloz/go-budget/pkg/domain/core"
 	"github.com/jairogloz/go-budget/pkg/mongo"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"time"
 )
@@ -12,10 +11,10 @@ import (
 // Create creates a new account.
 func (r repository) Create(user *core.User, account *core.Account) error {
 
-	if account.ID == nil {
-		// Generate new mongo ObjectId
-		account.ID = primitive.NewObjectID()
-	}
+	//if account.ID == nil {
+	//	// Generate new mongo ObjectId
+	//	account.ID = primitive.NewObjectID()
+	//}
 
 	ctx, cancel := context.WithTimeout(context.TODO(), mongo.TimeoutSeconds*time.Second)
 	defer cancel()
