@@ -6,20 +6,22 @@ import (
 )
 
 // Create creates a new account.
-func (s Service) Create(user *core.User, account *core.Account) error {
+func (s Service) Create(user *core.User, account core.Account) (*core.Account, error) {
 	accountCount, err := s.repo.CountAccounts(user.ID)
 	if err != nil {
 		// Todo: log error
-		return fmt.Errorf("error counting accounts: %w", err)
+		return nil, fmt.Errorf("error counting accounts: %w", err)
 	}
 	if accountCount >= user.FeatureAccess.MaxAccounts {
-		return fmt.Errorf("account limit '%d' reached for user level %s", user.FeatureAccess.MaxAccounts,
+		return nil, fmt.Errorf("account limit '%d' reached for user level %s", user.FeatureAccess.MaxAccounts,
 			user.Level)
 	}
-	err = s.repo.Create(nil, account)
+	insertedAccountID, err := s.repo.Create(account)
 	if err != nil {
 		// Todo: log error
-		return fmt.Errorf("error creating account: %w", err)
+		return nil, fmt.Errorf("error creating account: %w", err)
 	}
-	return nil
+	account.ID = insertedAccountID
+
+	return &account, nil
 }

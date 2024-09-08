@@ -1,6 +1,8 @@
 package ports
 
-import "github.com/jairogloz/go-budget/pkg/domain/core"
+import (
+	"github.com/jairogloz/go-budget/pkg/domain/core"
+)
 
 // TransactionRepository exposes the methods to interact with the transaction
 // storage.

@@ -24,12 +24,12 @@ func (h Handler) Create(c *gin.Context) {
 	}
 
 	domainAccount := accountCreate.ToDomain(user.ID)
-	err = h.service.Create(user, domainAccount)
+	createdAccount, err := h.service.Create(user, *domainAccount)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, domainAccount)
+	c.JSON(http.StatusOK, createdAccount)
 
 }

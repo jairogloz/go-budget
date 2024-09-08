@@ -6,7 +6,7 @@ import "time"
 type Account struct {
 	Balance        float64    `json:"balance" bson:"balance"`
 	CreatedAt      *time.Time `json:"created_at" bson:"created_at"`
-	ID             string     `json:"-" bson:"_id"`
+	ID             string     `json:"id" bson:"_id"`
 	InitialBalance float64    `json:"initial_balance" bson:"initial_balance"`
 	Name           string     `json:"name" bson:"name"`
 	UpdatedAt      *time.Time `json:"updated_at" bson:"updated_at"`
