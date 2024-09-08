@@ -13,8 +13,19 @@ type Transaction struct {
 	CreatedAt   *time.Time `json:"created_at" bson:"created_at"`
 	Description string     `json:"description" bson:"description"`
 	ID          string     `json:"id" bson:"_id"`
+	SubCategory *string    `json:"sub_category" bson:"sub_category"`
 	UpdatedAt   *time.Time `json:"updated_at" bson:"updated_at"`
 	UserId      string     `json:"user_id" bson:"user_id"`
+}
+
+// TransactionCreateParams represents the parameters that can be used to create
+// a new transaction.
+type TransactionCreateParams struct {
+	AccountID   *string `json:"account_id" bson:"account_id"`
+	Amount      float64 `json:"amount" bson:"amount"`
+	Category    *string `json:"category" bson:"category"`
+	Description string  `json:"description" bson:"description"`
+	SubCategory *string `json:"sub_category" bson:"sub_category"`
 }
 
 // TransactionUpdateParams represents the parameters that can be updated in a
