@@ -6,7 +6,8 @@ import (
 )
 
 type Config struct {
-	MongoURI string
+	MongoURI    string
+	MongoDBName string
 }
 
 // LoadConfig loads the configuration from the environment variables.
@@ -14,10 +15,14 @@ type Config struct {
 // Todo: implement better loading of configuration from environment variables.
 func LoadConfig() (*Config, error) {
 	c := &Config{
-		MongoURI: os.Getenv("MONGO_URI"),
+		MongoURI:    os.Getenv("MONGO_URI"),
+		MongoDBName: os.Getenv("MONGO_DB_NAME"),
 	}
 	if c.MongoURI == "" {
 		return nil, errors.New("MONGO_URI is required")
+	}
+	if c.MongoDBName == "" {
+		return nil, errors.New("MONGO_DB_NAME is required")
 	}
 	return c, nil
 }

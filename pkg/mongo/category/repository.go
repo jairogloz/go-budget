@@ -1,6 +1,7 @@
 package category
 
 import (
+	"github.com/jairogloz/go-budget/pkg/domain/core"
 	"github.com/jairogloz/go-budget/pkg/domain/ports"
 	goBudgetMongo "github.com/jairogloz/go-budget/pkg/mongo"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -14,9 +15,9 @@ type repository struct {
 }
 
 // NewRepository creates a new category repository.
-func NewRepository(client *mongo.Client) ports.CategoryRepository {
+func NewRepository(client *mongo.Client, c *core.Config) ports.CategoryRepository {
 	return &repository{
 		client: client,
-		catCol: client.Database(goBudgetMongo.DatabaseNameGoBudget).Collection(goBudgetMongo.CollectionNameCategories),
+		catCol: client.Database(c.MongoDBName).Collection(goBudgetMongo.CollectionNameCategories),
 	}
 }

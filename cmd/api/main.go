@@ -47,12 +47,12 @@ func main() {
 
 	ctxHdl := app_context.NewHandler()
 
-	txRepo := transaction.NewRepository(mongoClient)
-	catRepo := category.NewRepository(mongoClient)
+	txRepo := transaction.NewRepository(mongoClient, config)
+	catRepo := category.NewRepository(mongoClient, config)
 	txService := transactionService.NewService(txRepo, catRepo)
 	txHandler := transactionHandler.NewHandler(txService)
 
-	accountRepo := account.NewRepository(mongoClient)
+	accountRepo := account.NewRepository(mongoClient, config)
 	accountService := accService.NewService(accountRepo)
 	accountHandler := accHandler.NewHandler(accountService, ctxHdl)
 
