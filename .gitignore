@@ -86,7 +86,7 @@ Temporary Items
 .apdisk
 
 .env
-test.env
+dev.env
 
 # Air live-reload related files
 /tmp/

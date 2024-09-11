@@ -3,7 +3,6 @@ package transaction
 import (
 	"context"
 	"github.com/jairogloz/go-budget/pkg/domain/core"
-	core2 "github.com/jairogloz/go-budget/pkg/mongo/core"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -11,7 +10,21 @@ import (
 	"log"
 )
 
-// Delete removes a transaction from the database.
+// Delete removes a transaction from the database and updates the associated account balance.
+//
+// It takes a user ID and a transaction ID as input, starts a MongoDB session, and performs the following steps within a transaction:
+//  1. Converts the transaction ID to a MongoDB ObjectID.
+//  2. Removes the transaction from the database.
+//  3. Updates the account balance associated with the transaction.
+//
+// If any step fails, it logs the error and returns it.
+//
+// Parameters:
+//   - userId: the ID of the user who owns the transaction
+//   - transactionID: the ID of the transaction to be deleted
+//
+// Returns:
+//   - err: an error if there is an issue during the deletion or account balance update
 func (r repository) Delete(userId, transactionID string) error {
 	session, err := r.client.StartSession()
 	if err != nil {
@@ -52,12 +65,6 @@ func (r repository) Delete(userId, transactionID string) error {
 			log.Println("failed to update account balance", err.Error())
 			return nil, err
 		}
-		accId, err := core2.ObjectIDToString(updatedAccount.ID)
-		if err != nil {
-			log.Println("failed to convert account id to string", err.Error())
-			return nil, err
-		}
-		updatedAccount.ID = accId
 
 		return nil, nil
 	}
