@@ -1,13 +1,16 @@
 package ports
 
-import "github.com/jairogloz/go-budget/pkg/domain/core"
+import (
+	"context"
+	"github.com/jairogloz/go-budget/pkg/domain/core"
+)
 
 // AccountRepository exposes the methods to interact with the account storage.
 type AccountRepository interface {
 	Create(account core.Account) (insertedID string, err error)
 	CountAccounts(userId string) (int, error)
 	Delete(userId, id string) error
-	GetByID(userId, id string) (core.Account, error)
+	GetByID(ctx context.Context, userId, id string) (core.Account, error)
 	List(userId string) ([]core.Account, error)
 }
 
@@ -15,7 +18,7 @@ type AccountRepository interface {
 type AccountService interface {
 	Create(user *core.User, account core.Account) (*core.Account, error)
 	Delete(userId, id string) error
-	GetByID(userId, id string) (core.Account, error)
+	GetByID(ctx context.Context, userId, id string) (core.Account, error)
 	List(userId string) ([]core.Account, error)
 	Update(userID string, accountID string, updateParams core.AccountUpdateParams) error
 }
