@@ -18,6 +18,9 @@ type Transaction struct {
 	UserId      string     `json:"user_id" bson:"user_id"`
 }
 
+// Transactions is a list of Transaction objects.
+type Transactions []Transaction
+
 // TransactionCreateParams represents the parameters that can be used to create
 // a new transaction.
 type TransactionCreateParams struct {

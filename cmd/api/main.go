@@ -69,8 +69,6 @@ func main() {
 
 	router.Use(authHdl.AuthRequired())
 
-	// ============= BACKEND ROUTES =============
-
 	// Account routes
 	server.Router.DELETE("/accounts/:id", server.AccountHdl.Delete)
 	server.Router.GET("/accounts", server.AccountHdl.List)
@@ -80,6 +78,7 @@ func main() {
 	// Transaction routes
 	server.Router.POST("/transactions", server.TransactionHdl.Insert)
 	server.Router.DELETE("/transactions/:id", server.TransactionHdl.Delete)
+	server.Router.GET("/transactions", server.TransactionHdl.List)
 
 	log.Fatalln(server.Router.Run(":8080"))
 

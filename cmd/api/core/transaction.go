@@ -8,4 +8,5 @@ import (
 type TransactionHandler interface {
 	Delete(c *gin.Context)
 	Insert(c *gin.Context)
+	List(c *gin.Context)
 }
