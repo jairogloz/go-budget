@@ -13,6 +13,7 @@ type TransactionRepository interface {
 	FindByAccountID(userId, accountID string) ([]core.Transaction, error)
 	Insert(transaction *core.Transaction) (insertedID string, err error)
 	List(ctx context.Context, userID string, from, to *time.Time, limit, offset int) (core.Transactions, error)
+	ListGroupByCategory(ctx context.Context, userID string, from, to *time.Time) ([]core.TransactionGroupByCategory, error)
 }
 
 // TransactionService exposes the services provided by this application on the

@@ -43,6 +43,13 @@ func (s Service) List(ctx context.Context, user *core.User, from, to, limit, off
 	}
 
 	switch listType {
+	case "group_by_category":
+		txCategoryGroups, err := s.txRepo.ListGroupByCategory(ctx, user.ID, fromAsTime, toAsTime)
+		if err != nil {
+			log.Println("error listing transactions grouped by category:", err)
+			return nil, fmt.Errorf("error listing transactions grouped by category: %s", err.Error())
+		}
+		return txCategoryGroups, nil
 
 	case "":
 		// List transactions normally

@@ -24,14 +24,14 @@ func (s Service) Insert(user *core.User, transactionCreateParams core.Transactio
 
 	now := time.Now().UTC()
 	tx := &core.Transaction{
-		Amount:      transactionCreateParams.Amount,
-		AccountId:   transactionCreateParams.AccountID,
-		Category:    transactionCreateParams.Category,
-		CreatedAt:   &now,
-		Description: transactionCreateParams.Description,
-		SubCategory: transactionCreateParams.SubCategory,
-		UpdatedAt:   &now,
-		UserId:      user.ID,
+		Amount:        transactionCreateParams.Amount,
+		AccountId:     transactionCreateParams.AccountID,
+		CategoryID:    transactionCreateParams.Category,
+		CreatedAt:     &now,
+		Description:   transactionCreateParams.Description,
+		SubCategoryID: transactionCreateParams.SubCategory,
+		UpdatedAt:     &now,
+		UserId:        user.ID,
 	}
 
 	insertedID, err := s.txRepo.Insert(tx)
