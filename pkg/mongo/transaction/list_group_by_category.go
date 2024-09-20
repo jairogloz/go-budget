@@ -43,6 +43,12 @@ func (r repository) ListGroupByCategory(ctx context.Context, userID string, from
 				{"total_amount", bson.D{{"$sum", "$amount"}}}, // Sum the amounts
 			}},
 		},
+		// Sort by _id
+		{
+			{"$sort", bson.D{
+				{"_id", 1}, // 1 for ascending order, -1 for descending order
+			}},
+		},
 	}
 
 	// Run the aggregation query
