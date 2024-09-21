@@ -63,6 +63,11 @@ func (r repository) Insert(transaction *core.Transaction) (insertedID string, er
 		oid, err := primitive.ObjectIDFromHex(*transaction.AccountId)
 		if err != nil {
 			log.Println("failed to create object id", err.Error())
+			// Abort the transaction if object ID creation fails
+			abortErr := sessionContext.AbortTransaction(sessionContext)
+			if abortErr != nil {
+				log.Println("failed to abort transaction", abortErr.Error())
+			}
 			return nil, err
 		}
 		filter := bson.M{"_id": oid}
@@ -73,7 +78,11 @@ func (r repository) Insert(transaction *core.Transaction) (insertedID string, er
 		err = r.accCol.FindOneAndUpdate(sessionContext, filter, update, opts).Decode(&updatedAccount)
 		if err != nil {
 			log.Println("failed to update account balance", err.Error())
-			return nil, err
+			// Abort the transaction if updating balance fails
+			abortErr := sessionContext.AbortTransaction(sessionContext)
+			if abortErr != nil {
+				log.Println("failed to abort transaction", abortErr.Error())
+			}
 		}
 
 		return nil, nil
