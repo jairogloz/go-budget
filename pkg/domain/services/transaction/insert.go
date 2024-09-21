@@ -26,10 +26,10 @@ func (s Service) Insert(user *core.User, transactionCreateParams core.Transactio
 	tx := &core.Transaction{
 		Amount:        transactionCreateParams.Amount,
 		AccountId:     transactionCreateParams.AccountID,
-		CategoryID:    transactionCreateParams.Category,
+		CategoryID:    transactionCreateParams.CategoryID,
 		CreatedAt:     &now,
 		Description:   transactionCreateParams.Description,
-		SubCategoryID: transactionCreateParams.SubCategory,
+		SubCategoryID: transactionCreateParams.SubCategoryID,
 		UpdatedAt:     &now,
 		UserId:        user.ID,
 	}
