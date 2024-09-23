@@ -15,14 +15,14 @@ type Config struct {
 // Todo: implement better loading of configuration from environment variables.
 func LoadConfig() (*Config, error) {
 	c := &Config{
-		MongoURI:    os.Getenv("MONGO_URI"),
-		MongoDBName: os.Getenv("MONGO_DB_NAME"),
+		MongoURI:    os.Getenv("GO_BUDGET_MONGO_URI"),
+		MongoDBName: os.Getenv("GO_BUDGET_MONGO_DB_NAME"),
 	}
 	if c.MongoURI == "" {
-		return nil, errors.New("MONGO_URI is required")
+		return nil, errors.New("GO_BUDGET_MONGO_URI is required")
 	}
 	if c.MongoDBName == "" {
-		return nil, errors.New("MONGO_DB_NAME is required")
+		return nil, errors.New("GO_BUDGET_MONGO_DB_NAME is required")
 	}
 	return c, nil
 }
