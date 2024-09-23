@@ -23,8 +23,5 @@ WORKDIR /app
 # Copy the built binary from the builder stage
 COPY --from=builder /app/go-budget /app/go-budget
 
-# Copy the templates directory from the current environment
-COPY cmd/web/templates /app/pkg/templates
-
 # Run the binary
 CMD ["./go-budget"]
