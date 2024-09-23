@@ -20,6 +20,6 @@ jobs:
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
     - name: Build the Docker image
-      run: docker build -t go-budget .
+      run: docker build -t jairogloz/go-budget .
     - name: Push to Dockerhub
       run: docker push jairogloz/go-budget:latest
