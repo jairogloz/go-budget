@@ -23,6 +23,6 @@ jobs:
           MONGO_DB_NAME: ${{secrets.MONGO_DB_NAME}}
         run: |
           sudo docker run -d --name go-budget-container -p 8080:8080 \
-            -e GO_BUDGET_MONGO_URI="$MONGO_URI" \
-            -e GO_BUDGET_MONGO_DB_NAME="$MONGO_DB_NAME" \
+            -e GO_BUDGET_MONGO_URI="${MONGO_URI}" \
+            -e GO_BUDGET_MONGO_DB_NAME="${MONGO_DB_NAME}" \
             jairogloz/go-budget:latest
