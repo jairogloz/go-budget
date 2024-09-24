@@ -18,4 +18,10 @@ jobs:
       - name: Delete Old Docker Container
         run: sudo docker rm -f go-budget-container || true
       - name: Run Docker Container
-        run: sudo docker run -d --name go-budget-container -p 8080:8080 jairogloz/go-budget:latest
+        env:
+          MONGO_URI: ${{secrets.MONGO_URI}}
+          MONGO_DB_NAME: ${{secrets.MONGO_DB_NAME}}
+        run: sudo docker run -d --name go-budget-container -p 8080:8080 \
+          -e GO_BUDGET_MONGO_URI="$MONGO_URI" \
+          -e GO_BUDGET_MONGO_DB_NAME="$MONGO_DB_NAME" \
+          jairogloz/go-budget:latest
