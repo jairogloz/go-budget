@@ -11,7 +11,7 @@ import (
 // ConnectMongoDB connects to a MongoDB instance and returns a client to interact
 // with the database.
 func ConnectMongoDB(mongoURI string) (*mongo.Client, func(), error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoURI))

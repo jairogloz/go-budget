@@ -87,6 +87,7 @@ Temporary Items
 
 .env
 dev.env
+.env.production
 
 # Air live-reload related files
 /tmp/
