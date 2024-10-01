@@ -86,7 +86,7 @@ Temporary Items
 .apdisk
 
 .env
-dev.env
+.env.development
 .env.production
 
 # Air live-reload related files

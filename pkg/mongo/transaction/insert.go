@@ -83,6 +83,7 @@ func (r repository) Insert(transaction *core.Transaction) (insertedID string, er
 			if abortErr != nil {
 				log.Println("failed to abort transaction", abortErr.Error())
 			}
+			return nil, err
 		}
 
 		return nil, nil
