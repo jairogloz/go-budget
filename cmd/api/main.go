@@ -64,7 +64,7 @@ func main() {
 	}
 
 	accessCtrlService := access_control.NewService()
-	authHdl := auth.NewHandler(accessCtrlService)
+	authHdl := auth.NewHandler(accessCtrlService, []byte(config.JWTSecretKey))
 
 	router.Use(authHdl.AuthRequired())
 

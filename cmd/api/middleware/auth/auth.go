@@ -10,8 +10,6 @@ import (
 	"strings"
 )
 
-var supabaseJwtSecret = []byte("<jwt-secret>")
-
 // AuthRequired for now, simply inserts a user ID into the context.
 func (h *Handler) AuthRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -31,7 +29,7 @@ func (h *Handler) AuthRequired() gin.HandlerFunc {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 			}
-			return supabaseJwtSecret, nil
+			return h.JWTSecret, nil
 		})
 
 		// If token is invalid or parsing fails

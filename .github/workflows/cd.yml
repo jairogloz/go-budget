@@ -21,8 +21,10 @@ jobs:
         env:
           MONGO_URI: ${{secrets.MONGO_URI}}
           MONGO_DB_NAME: ${{secrets.MONGO_DB_NAME}}
+          SUPABASE_JWT_SECRET: ${{secrets.SUPABASE_JWT_SECRET}}
         run: |
           sudo docker run -d --name go-budget-container -p 8080:8080 \
             -e GO_BUDGET_MONGO_URI="${MONGO_URI}" \
             -e GO_BUDGET_MONGO_DB_NAME="${MONGO_DB_NAME}" \
+            -e SUPABASE_JWT_SECRET="${SUPABASE_JWT_SECRET}" \
             jairogloz/go-budget:latest
