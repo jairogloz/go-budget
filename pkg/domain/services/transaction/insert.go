@@ -33,6 +33,9 @@ func (s Service) Insert(user *core.User, transactionCreateParams core.Transactio
 		UpdatedAt:     &now,
 		UserId:        user.ID,
 	}
+	if transactionCreateParams.CreatedAt != nil {
+		tx.CreatedAt = transactionCreateParams.CreatedAt.ToTime()
+	}
 
 	insertedID, err := s.txRepo.Insert(tx)
 	if err != nil {
